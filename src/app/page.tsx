@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import SystemInfo from '../components/SystemInfo';
+import Layout from "@/components/Layout";
+import SystemInfo from "@/components/SystemInfo";
 
 const Home: React.FC = () => {
   return (
-    <div>
-      <main className='main-container'>
+    <Layout>
+      <main className='flex-grow p-5'>
         <SystemInfo />
       </main>
-    </div>
+    </Layout>
   );
 };
 

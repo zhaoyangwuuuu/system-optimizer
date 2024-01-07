@@ -6,7 +6,6 @@ const SystemInfo: React.FC = () => {
   const [memoryUsage, setMemoryUsage] = useState<{ total: number, used: number }>({ total: 0, used: 0 });
 
   useEffect(() => {
-    console.log('useEffect begin');
     const intervalId = setInterval(() => {
       invoke<number>('get_cpu_usage')
         .then((usage) => setCpuUsage(usage))
@@ -15,8 +14,6 @@ const SystemInfo: React.FC = () => {
       invoke<[number, number]>('get_memory_usage')
         .then(([total, used]) => setMemoryUsage({ total, used }))
         .catch(console.error);
-
-      console.log('useEffect end', cpuUsage, memoryUsage);
     }, 1000);
 
 
