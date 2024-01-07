@@ -4,11 +4,12 @@
 mod modules;
 
 use modules::system_info::{get_cpu_usage, get_memory_usage};
+use std::sync::Mutex;
 use sysinfo::System;
 
 fn main() {
-    let mut system = System::new_all();
-    system.refresh_all();
+    let system = Mutex::new(System::new_all());
+    // system.refresh_all();
 
     tauri::Builder::default()
         .manage(system)
