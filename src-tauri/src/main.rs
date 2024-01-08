@@ -9,7 +9,6 @@ use sysinfo::System;
 
 fn main() {
     let system = Mutex::new(System::new_all());
-    // system.refresh_all();
 
     tauri::Builder::default()
         .manage(system)
