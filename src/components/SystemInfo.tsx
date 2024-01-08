@@ -3,6 +3,11 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
+const rootStyle = getComputedStyle(document.documentElement);
+
+const borderColor =
+  rootStyle.getPropertyValue("--chart-border-color") ||
+  "rgba(53, 162, 235, 0.8)";
 
 const SystemInfo: React.FC = () => {
   const [cpuUsage, setCpuUsage] = useState<number>(0);
@@ -29,28 +34,14 @@ const SystemInfo: React.FC = () => {
     return () => clearInterval(intervalId);
   }, [cpuUsage, totalMemory, usedMemory]);
 
-  // const cpuUsageChart = {
-  //   labels: Array(30).fill(""),
-  //   datasets: [
-  //     {
-  //       label: "CPU Usage (%)",
-  //       data: cpuUsageData,
-  //       backgroundColor: "rgba(53, 162, 235, 0.5)",
-  //       borderColor: "rgba(53, 162, 235, 0.8)",
-  //       borderWidth: 1,
-  //     },
-  //   ],
-  // };
   const timeLabels = cpuUsageData.map((_, index) => `${index}s`);
 
   const cpuUsageChart = {
     labels: timeLabels,
     datasets: [
       {
-        label: "CPU Usage (%)",
         data: cpuUsageData,
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-        borderColor: "rgba(53, 162, 235, 0.8)",
+        borderColor,
         borderWidth: 1,
         pointRadius: 0,
         tension: 0.5,
@@ -78,7 +69,6 @@ const SystemInfo: React.FC = () => {
 
   return (
     <div>
-      <h3>System Information</h3>
       <p>CPU Usage: {cpuUsage.toFixed(2)}%</p>
       <div>
         <Line data={cpuUsageChart} options={options} />
