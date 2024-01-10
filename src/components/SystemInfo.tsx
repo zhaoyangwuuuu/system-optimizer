@@ -55,6 +55,7 @@ const SystemInfo: React.FC = () => {
               ) {
                 currentData[index].usage.push(cores.usage);
                 currentData[index].usage.slice(-30);
+                console.log("fffff\n", currentData);
                 return currentData;
               } else {
                 currentData.push({
