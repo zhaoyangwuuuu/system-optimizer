@@ -1,10 +1,6 @@
 import { fakerEN as faker } from "@faker-js/faker";
 import { GetCpuCoreData } from "@/components/SystemInfo";
 
-export const generateMockCpuUsage = () => {
-  return faker.number.int({ min: 0, max: 100 });
-};
-
 export const generateMockMemoryUsage = () => {
   const total = 32;
   return total - faker.number.float({ min: 0, max: 32 });

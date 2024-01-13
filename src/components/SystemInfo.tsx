@@ -3,7 +3,6 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import {
-  generateMockCpuUsage,
   generateMockMemoryUsage,
   generateMockCoresData,
 } from "@/utils/mockDataUtils";
@@ -21,11 +20,6 @@ export type GetCpuCoreData = {
 
 // TODO: Separate into different components
 const SystemInfo: React.FC = () => {
-  const [cpuUsage, setCpuUsage] = useState<number>(0);
-  const [cpuUsageData, setCpuUsageData] = useState<number[]>(
-    new Array(X_AXIS_LENGTH).fill(0)
-  );
-
   const [cpuCoresData, setCpuCoresData] = useState<number[][]>([]);
 
   const [totalMemory, setTotalMemory] = useState<number>(0);
@@ -51,15 +45,6 @@ const SystemInfo: React.FC = () => {
     };
 
     const intervalId = setInterval(() => {
-      if (__DEBUG__) {
-        const mockCpuUsage = generateMockCpuUsage();
-        setCpuUsage(mockCpuUsage);
-      } else {
-        invoke<number>("get_cpu_usage")
-          .then((usage) => setCpuUsage(usage))
-          .catch(console.error);
-      }
-
       if (__DEBUG__) {
         const mockMemoryUsage = generateMockMemoryUsage();
         setTotalMemory(32);
@@ -88,10 +73,6 @@ const SystemInfo: React.FC = () => {
       }
     }, 1000);
 
-    setCpuUsageData((currentData) =>
-      [...currentData, cpuUsage].slice(-X_AXIS_LENGTH)
-    );
-
     let usedPercentage = (usedMemory / totalMemory) * 100;
     if (isNaN(usedPercentage)) {
       usedPercentage = 0;
@@ -100,24 +81,11 @@ const SystemInfo: React.FC = () => {
       [...currentData, usedPercentage].slice(-X_AXIS_LENGTH)
     );
     return () => clearInterval(intervalId);
-  }, [cpuUsage, totalMemory, usedMemory, cpuCoresData]);
+  }, [totalMemory, usedMemory, cpuCoresData]);
 
   const TIME_LABELS = new Array(X_AXIS_LENGTH)
     .fill(null)
     .map((_, index) => `${X_AXIS_LENGTH - 1 - index}s`);
-
-  const cpuUsageChart = {
-    labels: TIME_LABELS,
-    datasets: [
-      {
-        data: cpuUsageData,
-        borderColor,
-        borderWidth: 1,
-        pointRadius: 0,
-        tension: 0.5,
-      },
-    ],
-  };
 
   const options = {
     scales: {
@@ -184,13 +152,7 @@ const SystemInfo: React.FC = () => {
 
   return (
     <div>
-      <p>CPU Usage: {cpuUsage.toFixed(2)}%</p>
-      <div>
-        <Line data={cpuUsageChart} options={options} />
-      </div>
-      <p>Total Memory: {totalMemory.toFixed(2)} GB</p>
-      <p>Used Memory: {usedMemory.toFixed(2)} GB</p>
-      <p>Used Memory: {((usedMemory / totalMemory) * 100).toFixed(2)} %</p>
+      <p>Memory Usage: {((usedMemory / totalMemory) * 100).toFixed(2)} %</p>
       <div>
         <Line data={memoryUsageChart} options={options} />
       </div>
