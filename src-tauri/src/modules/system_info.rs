@@ -2,7 +2,6 @@ use sysinfo::{CpuRefreshKind, RefreshKind, System};
 
 #[derive(serde::Serialize, Debug)]
 pub struct CpuInfo {
-    name: String,
     usage: f32,
 }
 
@@ -26,13 +25,11 @@ pub fn get_cpus_info() -> Vec<CpuInfo> {
         System::new_with_specifics(RefreshKind::new().with_cpu(CpuRefreshKind::everything()));
     std::thread::sleep(sysinfo::MINIMUM_CPU_UPDATE_INTERVAL);
     system.refresh_cpu();
-    let test = system
+    system
         .cpus()
         .iter()
         .map(|cpu| CpuInfo {
-            name: cpu.name().to_string(),
             usage: cpu.cpu_usage(),
         })
-        .collect();
-    test
+        .collect()
 }

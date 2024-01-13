@@ -1,38 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Line } from "react-chartjs-2";
-import { Chart, ChartOptions, registerables } from "chart.js";
+import { Chart, registerables } from "chart.js";
 import {
   generateMockCpuUsage,
   generateMockMemoryUsage,
+  generateMockCoresData,
 } from "@/utils/mockDataUtils";
 Chart.register(...registerables);
 
 const __DEBUG__ = process.env.NEXT_PUBLIC_DEBUG_MODE || false;
-console.log(__DEBUG__);
 const X_AXIS_LENGTH = 15;
 
 // Styles
 const borderColor = "rgba(53, 162, 235, 0.8)";
 
-// TODO: name is not used, maybe remove it
-type GetCpuCoreData = {
-  name: string;
+export type GetCpuCoreData = {
   usage: number;
 };
 
-type ChartCpuCoreData = {
-  name: string;
-  usage: number[];
-};
-
+// TODO: Separate into different components
 const SystemInfo: React.FC = () => {
   const [cpuUsage, setCpuUsage] = useState<number>(0);
   const [cpuUsageData, setCpuUsageData] = useState<number[]>(
     new Array(X_AXIS_LENGTH).fill(0)
   );
 
-  const [cpuCoresData, setCpuCoresData] = useState<ChartCpuCoreData[]>([]);
+  const [cpuCoresData, setCpuCoresData] = useState<number[][]>([]);
 
   const [totalMemory, setTotalMemory] = useState<number>(0);
   const [usedMemory, setUsedMemory] = useState<number>(0);
@@ -41,6 +35,21 @@ const SystemInfo: React.FC = () => {
   );
 
   useEffect(() => {
+    const generateChartCpuCoreData = (data: GetCpuCoreData[]) => {
+      // set a new array with number of cores filled with 0
+      if (cpuCoresData.length === 0) {
+        setCpuCoresData(
+          new Array(data.length).fill(new Array(X_AXIS_LENGTH).fill(0))
+        );
+      }
+
+      setCpuCoresData((currentData) =>
+        currentData.map((subArray, index) => {
+          return [...subArray.slice(1), data[index].usage];
+        })
+      );
+    };
+
     const intervalId = setInterval(() => {
       if (__DEBUG__) {
         const mockCpuUsage = generateMockCpuUsage();
@@ -66,36 +75,27 @@ const SystemInfo: React.FC = () => {
           })
           .catch(console.error);
       }
-      // invoke<GetCpuCoreData[]>("get_cpus_info").then(
-      //   (coresData: GetCpuCoreData[]) => {
-      //     coresData.map((cores, index) => {
-      //       setCpuCoresData((currentData) => {
-      //         if (
-      //           currentData.length !== 0 &&
-      //           currentData[index] !== undefined
-      //         ) {
-      //           currentData[index].usage.push(cores.usage);
-      //           currentData[index].usage.slice(-30);
-      //           console.log("fffff\n", currentData);
-      //           return currentData;
-      //         } else {
-      //           currentData.push({
-      //             name: cores.name,
-      //             usage: [cores.usage],
-      //           });
-      //           return currentData;
-      //         }
-      //       });
-      //     });
-      //   }
-      // );
+
+      if (__DEBUG__) {
+        let data = generateMockCoresData(8);
+        generateChartCpuCoreData(data);
+      } else {
+        invoke<GetCpuCoreData[]>("get_cpus_info").then(
+          (coresData: GetCpuCoreData[]) => {
+            generateChartCpuCoreData(coresData);
+          }
+        );
+      }
     }, 1000);
 
     setCpuUsageData((currentData) =>
       [...currentData, cpuUsage].slice(-X_AXIS_LENGTH)
     );
 
-    const usedPercentage = (usedMemory / totalMemory) * 100;
+    let usedPercentage = (usedMemory / totalMemory) * 100;
+    if (isNaN(usedPercentage)) {
+      usedPercentage = 0;
+    }
     setMemoryUsageData((currentData) =>
       [...currentData, usedPercentage].slice(-X_AXIS_LENGTH)
     );
@@ -154,53 +154,33 @@ const SystemInfo: React.FC = () => {
     ],
   };
 
-  const memoryOptions = {
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 100,
-      },
-    },
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
+  // TODO: different color for each core
+  const cpuCoreChart = {
+    labels: TIME_LABELS,
+    datasets: cpuCoresData.map((data, index) => {
+      return {
+        label: `CPU ${index + 1}`,
+        data,
+        borderColor,
+        fill: false,
+        borderWidth: 1,
+        pointRadius: 0,
+        tension: 0.5,
+      };
+    }),
   };
 
-  // const cpuUsageChart2 = {
-  //   labels: timeLabels,
-  //   datasets: cpuCoresData.map((data: ChartCpuCoreData, index) => {
-  //     return {
-  //       label: `CPU ${index + 1}`,
-  //       data: data.usage,
-  //       borderColor,
-  //       fill: false,
-  //       borderWidth: 1,
-  //       pointRadius: 0,
-  //       tension: 0.5,
-  //     };
-  //   }),
-  // };
-
-  // const options2 = {
-  //   scales: {
-  //     y: {
-  //       beginAtZero: true,
-  //       max: 100,
-  //     },
-  //     x: {
-  //       display: true,
-  //     },
-  //   },
-  //   maintainAspectRatio: false,
-  //   plugins: {
-  //     legend: {
-  //       display: true,
-  //     },
-  //   },
-  // };
+  const cpuCoreChartOptions = {
+    ...options,
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+    animation: {
+      duration: 0,
+    },
+  };
 
   return (
     <div>
@@ -214,9 +194,9 @@ const SystemInfo: React.FC = () => {
       <div>
         <Line data={memoryUsageChart} options={options} />
       </div>
-      {/* <div>
-        <Line data={cpuUsageChart2} options={options2} />
-      </div> */}
+      <div>
+        <Line data={cpuCoreChart} options={cpuCoreChartOptions} />
+      </div>
     </div>
   );
 };
