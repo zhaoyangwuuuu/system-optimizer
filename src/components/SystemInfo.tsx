@@ -5,7 +5,8 @@ import { Chart, registerables } from "chart.js";
 import {
   generateMockMemoryUsage,
   generateMockCoresData,
-} from "@/utils/mockDataUtils";
+  generateColor,
+} from "@/utils/ChartUtils";
 Chart.register(...registerables);
 
 const __DEBUG__ = process.env.NEXT_PUBLIC_DEBUG_MODE || false;
@@ -122,14 +123,13 @@ const SystemInfo: React.FC = () => {
     ],
   };
 
-  // TODO: different color for each core
   const cpuCoreChart = {
     labels: TIME_LABELS,
     datasets: cpuCoresData.map((data, index) => {
       return {
         label: `CPU ${index + 1}`,
         data,
-        borderColor,
+        borderColor: generateColor(index),
         fill: false,
         borderWidth: 1,
         pointRadius: 0,
