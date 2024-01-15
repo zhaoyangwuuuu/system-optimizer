@@ -80,7 +80,7 @@ const SystemInfo: React.FC = () => {
           }
         );
       }
-    }, 1000);
+    }, refreshRate);
 
     let usedPercentage = (usedMemory / totalMemory) * 100;
     if (isNaN(usedPercentage)) {
@@ -90,8 +90,9 @@ const SystemInfo: React.FC = () => {
       [...currentData, usedPercentage].slice(-X_AXIS_LENGTH)
     );
     return () => clearInterval(intervalId);
-  }, [totalMemory, usedMemory, cpuCoresData]);
+  }, [totalMemory, usedMemory, cpuCoresData, refreshRate]);
 
+  // TODO: Change TIME_LABELS according to refresh rate
   const TIME_LABELS = new Array(X_AXIS_LENGTH)
     .fill(null)
     .map((_, index) => `${X_AXIS_LENGTH - 1 - index}s`);
