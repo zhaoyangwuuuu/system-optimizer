@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/redux/store";
+import { setRefreshRate } from "@/redux/slices/refreshRateSlice";
 import {
   generateMockMemoryUsage,
   generateMockCoresData,
@@ -28,6 +31,11 @@ const SystemInfo: React.FC = () => {
   const [memoryUsageData, setMemoryUsageData] = useState<number[]>(
     new Array(X_AXIS_LENGTH).fill(0)
   );
+
+  const refreshRate = useSelector(
+    (state: RootState) => state.refreshRate.value
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const generateChartCpuCoreData = (data: GetCpuCoreData[]) => {

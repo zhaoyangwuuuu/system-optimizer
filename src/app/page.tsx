@@ -6,9 +6,7 @@ import SystemInfo from "@/components/SystemInfo";
 const Home: React.FC = () => {
   return (
     <Layout>
-      <main className='flex-grow p-5'>
-        <SystemInfo />
-      </main>
+      <main className='flex-grow p-5'>{/* <SystemInfo /> */}</main>
     </Layout>
   );
 };
