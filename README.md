@@ -31,3 +31,23 @@ Before running System Optimizer, ensure you have the following installed:
    ```bash
    npm run tauri build
    ```
+
+### FAQ
+
+1.Having permission denied errors:
+
+```bash
+KMS: DRM_IOCTL_MODE_CREATE_DUMB failed: Permission denied
+Failed to create GBM buffer of size 800x600: Permission denied
+KMS: DRM_IOCTL_MODE_CREATE_DUMB failed: Permission denied
+Failed to create GBM buffer of size 800x600: Permission denied
+KMS: DRM_IOCTL_MODE_CREATE_DUMB failed: Permission denied
+Failed to create GBM buffer of size 800x600: Permission denied
+Failed to create EGL images for DMABufs with file descriptors -1, -1 and -1
+```
+
+Set
+
+```bash
+export WEBKIT_DISABLE_DMABUF_RENDERER=1
+```
