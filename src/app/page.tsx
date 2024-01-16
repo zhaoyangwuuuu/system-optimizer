@@ -1,14 +1,7 @@
 "use client";
 
-import Layout from "@/components/Layout";
-import SystemInfo from "@/components/SystemInfo";
-
 const Home: React.FC = () => {
-  return (
-    <Layout>
-      <main className='flex-grow p-5'>{/* <SystemInfo /> */}</main>
-    </Layout>
-  );
+  return <main className='flex-grow p-5'></main>;
 };
 
 export default Home;

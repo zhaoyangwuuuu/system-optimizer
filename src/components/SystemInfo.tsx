@@ -4,12 +4,13 @@ import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { setRefreshRate } from "@/redux/slices/refreshRateSlice";
 import {
   generateMockMemoryUsage,
   generateMockCoresData,
   generateColor,
 } from "@/utils/ChartUtils";
+import MemoryUsageComponent from "./SystemInfo/MemoryUsageComponent";
+import CpuCoresComponent from "./SystemInfo/CpuCoresComponent";
 Chart.register(...registerables);
 
 const __DEBUG__ = process.env.NEXT_PUBLIC_DEBUG_MODE || false;
@@ -22,7 +23,6 @@ export type GetCpuCoreData = {
   usage: number;
 };
 
-// TODO: Separate into different components
 const SystemInfo: React.FC = () => {
   const [cpuCoresData, setCpuCoresData] = useState<number[][]>([]);
 
@@ -39,7 +39,6 @@ const SystemInfo: React.FC = () => {
 
   useEffect(() => {
     const generateChartCpuCoreData = (data: GetCpuCoreData[]) => {
-      // set a new array with number of cores filled with 0
       if (cpuCoresData.length === 0) {
         setCpuCoresData(
           new Array(data.length).fill(new Array(X_AXIS_LENGTH).fill(0))
@@ -118,35 +117,6 @@ const SystemInfo: React.FC = () => {
     },
   };
 
-  const memoryUsageChart = {
-    labels: TIME_LABELS,
-    datasets: [
-      {
-        data: memoryUsageData,
-        borderColor,
-        fill: false,
-        borderWidth: 1,
-        pointRadius: 0,
-        tension: 0.5,
-      },
-    ],
-  };
-
-  const cpuCoreChart = {
-    labels: TIME_LABELS,
-    datasets: cpuCoresData.map((data, index) => {
-      return {
-        label: `CPU ${index + 1}`,
-        data,
-        borderColor: generateColor(index),
-        fill: false,
-        borderWidth: 1,
-        pointRadius: 0,
-        tension: 0.5,
-      };
-    }),
-  };
-
   const cpuCoreChartOptions = {
     ...options,
     plugins: {
@@ -162,12 +132,16 @@ const SystemInfo: React.FC = () => {
   return (
     <div>
       <p>Memory Usage: {((usedMemory / totalMemory) * 100).toFixed(2)} %</p>
-      <div>
-        <Line data={memoryUsageChart} options={options} />
-      </div>
-      <div>
-        <Line data={cpuCoreChart} options={cpuCoreChartOptions} />
-      </div>
+      <MemoryUsageComponent
+        memoryUsageData={memoryUsageData}
+        options={options}
+        TIME_LABELS={TIME_LABELS}
+      />
+      <CpuCoresComponent
+        cpuCoresData={cpuCoresData}
+        options={cpuCoreChartOptions}
+        TIME_LABELS={TIME_LABELS}
+      />
     </div>
   );
 };

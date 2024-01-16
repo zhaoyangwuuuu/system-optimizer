@@ -2,11 +2,7 @@ import Layout from "@/components/Layout";
 import SystemInfo from "@/components/SystemInfo";
 
 const ResourcesPage: React.FC = () => {
-  return (
-    <Layout>
-      <SystemInfo />
-    </Layout>
-  );
+  return <SystemInfo />;
 };
 
 export default ResourcesPage;
