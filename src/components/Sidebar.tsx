@@ -31,6 +31,13 @@ const Sidebar: React.FC = () => {
             </div>
           </Link>
         </li>
+        <li className='mb-4'>
+          <Link href='/processes'>
+            <div className='block p-2 hover:bg-stone-700 rounded'>
+              Processes
+            </div>
+          </Link>
+        </li>
         <li className='mb-4 mt-auto'>
           <Link href='/preference'>
             <div className='block p-2 hover:bg-stone-700 rounded'>

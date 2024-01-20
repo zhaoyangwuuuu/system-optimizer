@@ -21,6 +21,7 @@ p-6 bg-white rounded-lg shadow-md'
         <label htmlFor='refresh-rate' className='block text-gray-700'>
           Refresh Rate (ms):{" "}
         </label>
+        {/* TODO: Fix font color in input */}
         <input
           id='refresh-rate'
           type='number'

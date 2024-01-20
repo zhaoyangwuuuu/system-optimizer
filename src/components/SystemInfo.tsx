@@ -23,6 +23,7 @@ export type GetCpuCoreData = {
   usage: number;
 };
 
+// TODO: move this to SystemInfo folder?
 const SystemInfo: React.FC = () => {
   const [cpuCoresData, setCpuCoresData] = useState<number[][]>([]);
 
