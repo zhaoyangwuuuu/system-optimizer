@@ -53,7 +53,7 @@ const SystemInfo: React.FC = () => {
       );
     };
 
-    const intervalId = setInterval(() => {
+    const interval = setInterval(() => {
       if (__DEBUG__) {
         const mockMemoryUsage = generateMockMemoryUsage();
         setTotalMemory(32);
@@ -89,7 +89,7 @@ const SystemInfo: React.FC = () => {
     setMemoryUsageData((currentData) =>
       [...currentData, usedPercentage].slice(-X_AXIS_LENGTH)
     );
-    return () => clearInterval(intervalId);
+    return () => clearInterval(interval);
   }, [totalMemory, usedMemory, cpuCoresData, refreshRate]);
 
   // TODO: Change TIME_LABELS according to refresh rate
