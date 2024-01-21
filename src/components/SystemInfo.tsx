@@ -7,8 +7,8 @@ import { RootState } from "@/redux/store";
 import {
   generateMockMemoryUsage,
   generateMockCoresData,
-  generateColor,
-} from "@/utils/ChartUtils";
+} from "@/utils/MockUtils";
+import { generateColor } from "@/utils/ChartUtils";
 import MemoryUsageComponent from "./SystemInfo/MemoryUsageComponent";
 import CpuCoresComponent from "./SystemInfo/CpuCoresComponent";
 Chart.register(...registerables);

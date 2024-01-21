@@ -1,4 +1,4 @@
-import Processes from "../components/Processes";
+import Processes from "@/components/Processes";
 
 const ProcessesPage: React.FC = () => {
   return <Processes />;
