@@ -10,9 +10,9 @@ import {
 import MemoryUsageComponent from "./SystemInfo/MemoryUsageComponent";
 import CpuCoresComponent from "./SystemInfo/CpuCoresComponent";
 
-// if (typeof window !== "undefined") {
-Chart.register(...registerables);
-// }
+if (typeof window !== "undefined") {
+  Chart.register(...registerables);
+}
 
 const __DEBUG__ = process.env.NEXT_PUBLIC_DEBUG_MODE || false;
 const X_AXIS_LENGTH = 15;

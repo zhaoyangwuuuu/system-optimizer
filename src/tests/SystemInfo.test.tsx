@@ -4,21 +4,29 @@ import { Provider } from "react-redux";
 import SystemInfo from "@/components/SystemInfo";
 import configureMockStore from "redux-mock-store";
 import "@testing-library/jest-dom";
+import { cleanup } from "@testing-library/react";
+import { ChartConfiguration, ChartType } from "chart.js";
 
 window.addEventListener = jest.fn();
 window.removeEventListener = jest.fn();
 
-// TODO: fix erros
-// jest.mock("chart.js/auto", () => ({
-//   Chart: class {
-//     constructor() {
-//       this.canvas = document.createElement("canvas");
-//       this.ctx = this.canvas.getContext("2d");
-//     }
-//     update() {}
-//     destroy() {}
-//   },
-// }));
+jest.mock("chart.js/auto", () => ({
+  Chart: class {
+    context: CanvasRenderingContext2D | null;
+    options: ChartConfiguration<ChartType>;
+
+    constructor(
+      context: CanvasRenderingContext2D | null,
+      options: ChartConfiguration<ChartType>
+    ) {
+      this.context = context;
+      this.options = options;
+    }
+    update() {}
+    destroy() {}
+  },
+  registerables: [],
+}));
 
 const mockStore = configureMockStore();
 const store = mockStore({
@@ -37,3 +45,5 @@ describe("SystemInfo Component", () => {
     });
   });
 });
+
+afterEach(cleanup);
