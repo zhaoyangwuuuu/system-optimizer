@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "web-dev": "cross-env NEXT_PUBLIC_DEBUG_MODE=true next dev",
+    "web-dev": "cross-env NEXT_PUBLIC_DEBUG_MODE=true NODE_ENV=dev next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "cross-env NEXT_PUBLIC_DEBUG_MODE=true NODE_ENV=test jest",
     "tauri": "tauri"
   },
   "dependencies": {
@@ -23,17 +24,29 @@
     "react-redux": "^9.1.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.23.8",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@faker-js/faker": "^8.3.1",
     "@tauri-apps/cli": "^1.5.9",
+    "@testing-library/jest-dom": "^6.2.1",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^29.5.11",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/redux-mock-store": "^1.0.6",
     "autoprefixer": "^10.0.1",
+    "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
+    "redux-mock-store": "^1.5.4",
     "tailwindcss": "^3.3.0",
+    "tsconfig-paths-jest": "^0.0.1",
     "typescript": "^5"
   }
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -8,16 +7,15 @@ import {
   generateMockMemoryUsage,
   generateMockCoresData,
 } from "@/utils/MockUtils";
-import { generateColor } from "@/utils/ChartUtils";
 import MemoryUsageComponent from "./SystemInfo/MemoryUsageComponent";
 import CpuCoresComponent from "./SystemInfo/CpuCoresComponent";
+
+// if (typeof window !== "undefined") {
 Chart.register(...registerables);
+// }
 
 const __DEBUG__ = process.env.NEXT_PUBLIC_DEBUG_MODE || false;
 const X_AXIS_LENGTH = 15;
-
-// Styles
-const borderColor = "rgba(53, 162, 235, 0.8)";
 
 export type GetCpuCoreData = {
   usage: number;
