@@ -26,10 +26,37 @@ const CpuCoresComponent: React.FC<CpuCoresComponentProps> = ({
     })),
   };
 
+  const renderCpuInfoBoxes = () => {
+    return (
+      <div className='grid grid-cols-5 gap-4'>
+        {cpuCoresData.map((data, index) => {
+          const mostRecentUsage = data[data.length - 1];
+          const borderColor = generateColor(index);
+          return (
+            <div
+              key={index}
+              className='flex items-center justify-center p-2 m-1 border-2 rounded'
+              style={{
+                borderColor: borderColor,
+                width: "100%",
+              }}
+            >
+              <span className='font-bold mr-2'>CPU{index + 1}</span>
+              <span className='text-sm'>{mostRecentUsage}%</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
-    <div>
-      <Line data={cpuCoreChart} options={options} />
-    </div>
+    <React.Fragment>
+      <div>
+        <Line data={cpuCoreChart} options={options} />
+      </div>
+      <div className='p-2'>{renderCpuInfoBoxes()}</div>
+    </React.Fragment>
   );
 };
 
