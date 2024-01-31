@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { generateMockProesses } from "@/utils/MockUtils";
 
@@ -16,6 +16,7 @@ const Processes: React.FC = () => {
     null
   );
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const actionMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProcesses = () => {
@@ -37,6 +38,22 @@ const Processes: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        actionMenuRef.current &&
+        !actionMenuRef.current.contains(event.target as Node)
+      ) {
+        setSelectedProcess(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleProcessClick = (
     process: ProcessInfo,
     event: React.MouseEvent
@@ -49,6 +66,37 @@ const Processes: React.FC = () => {
   const handleMenuAction = (action: string) => {
     console.log(`Action ${action} on process ${selectedProcess?.pid}`);
     setSelectedProcess(null);
+  };
+
+  const ActionMenu = () => {
+    return (
+      <div
+        ref={actionMenuRef}
+        className='absolute bg-neutral-800 border border-gray-300 rounded shadow-lg '
+        style={{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }}
+      >
+        <ul className='p-2'>
+          <li
+            className='cursor-pointer hover:bg-gray-100'
+            onClick={() => handleMenuAction("kill")}
+          >
+            Kill
+          </li>
+          <li
+            className='cursor-pointer hover:bg-gray-100'
+            onClick={() => handleMenuAction("end")}
+          >
+            End
+          </li>
+          <li
+            className='cursor-pointer hover:bg-gray-100'
+            onClick={() => handleMenuAction("show_properties")}
+          >
+            Show Properties
+          </li>
+        </ul>
+      </div>
+    );
   };
 
   return (
@@ -74,33 +122,7 @@ const Processes: React.FC = () => {
           </div>
         ))}
       </div>
-      {selectedProcess !== null && (
-        <div
-          className='absolute bg-white border border-gray-300 rounded shadow-lg'
-          style={{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }}
-        >
-          <ul className='p-2'>
-            <li
-              className='cursor-pointer hover:bg-gray-100'
-              onClick={() => handleMenuAction("kill")}
-            >
-              Kill
-            </li>
-            <li
-              className='cursor-pointer hover:bg-gray-100'
-              onClick={() => handleMenuAction("end")}
-            >
-              End
-            </li>
-            <li
-              className='cursor-pointer hover:bg-gray-100'
-              onClick={() => handleMenuAction("show_properties")}
-            >
-              Show Properties
-            </li>
-          </ul>
-        </div>
-      )}
+      {selectedProcess !== null && ActionMenu()}
     </div>
   );
 };
