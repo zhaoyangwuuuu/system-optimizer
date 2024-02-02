@@ -3,7 +3,7 @@
 
 mod modules;
 
-use modules::processes::get_processes;
+use modules::processes::{get_processes, kill_process};
 use modules::system_info::{get_cpu_usage, get_cpus_info, get_memory_usage};
 
 fn main() {
@@ -13,6 +13,7 @@ fn main() {
             get_memory_usage,
             get_cpus_info,
             get_processes,
+            kill_process,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

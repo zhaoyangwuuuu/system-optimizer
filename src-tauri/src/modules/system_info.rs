@@ -2,7 +2,7 @@ use sysinfo::{CpuRefreshKind, RefreshKind, System};
 
 #[derive(serde::Serialize, Debug)]
 pub struct CpuInfo {
-    usage: i32,
+    usage: u32,
 }
 
 #[tauri::command]
@@ -29,7 +29,7 @@ pub fn get_cpus_info() -> Vec<CpuInfo> {
         .cpus()
         .iter()
         .map(|cpu| CpuInfo {
-            usage: cpu.cpu_usage().round() as i32,
+            usage: cpu.cpu_usage().round() as u32,
         })
         .collect()
 }
