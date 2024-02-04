@@ -63,8 +63,20 @@ const Processes: React.FC = () => {
     setMenuPosition({ x: event.clientX, y: event.clientY });
   };
 
-  const handleMenuAction = (action: string) => {
+  const handleActionMenu = (action: string) => {
     console.log(`Action ${action} on process ${selectedProcess?.pid}`);
+    if (!setSelectedProcess) return;
+
+    if (action === "kill") {
+      invoke("kill", {pid: selectedProcess?.pid})
+      .then(() => {
+        console.log(`Process ${selectedProcess?.pid} killed successfully`);
+      })
+      .catch((err) => {
+        console.error(`Failed to kill process ${selectedProcess?.pid}:`, err);
+      });
+    }
+
     setSelectedProcess(null);
   };
 
@@ -78,19 +90,19 @@ const Processes: React.FC = () => {
         <ul className='p-2'>
           <li
             className='cursor-pointer hover:bg-gray-100'
-            onClick={() => handleMenuAction("kill")}
+            onClick={() => handleActionMenu("kill")}
           >
             Kill
           </li>
           <li
             className='cursor-pointer hover:bg-gray-100'
-            onClick={() => handleMenuAction("end")}
+            onClick={() => handleActionMenu("end")}
           >
             End
           </li>
           <li
             className='cursor-pointer hover:bg-gray-100'
-            onClick={() => handleMenuAction("show_properties")}
+            onClick={() => handleActionMenu("show_properties")}
           >
             Show Properties
           </li>
